@@ -1,5 +1,5 @@
 import { Avatar, Layout, Input, Button } from "antd";
-import { UserOutlined } from "@ant-design/icons";
+import {MenuOutlined, UserOutlined} from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { useAuth } from "/src/context/AuthContext";
 
@@ -16,6 +16,13 @@ export default function Header() {
         <div className="sticky top-0 z-10 bg-white shadow-md">
             <Layout className="mx-auto px-5 py-4 w-full">
                 <div className="flex items-center justify-between gap-5">
+                    <div>
+                        {/*<Button*/}
+                        {/*    icon={<MenuOutlined />}*/}
+                        {/*    onClick={toggleMenu} // Передайте функцию из SiderMenu*/}
+                        {/*    className="md:hidden" // Скрыть на десктопах*/}
+                        {/*/>*/}
+                    </div>
                     <div className="flex items-center w-full gap-5">
                         <img
                             src="/img/logo/favicon.ico"

@@ -26,7 +26,7 @@ export default function SiderMenu({ onCollapse }) {
 
     return (
         <motion.div
-            animate={{width: collapsed ? 70 : 180}}
+            animate={{width: collapsed ? 0 : 180}}
             transition={{duration: 0.3, ease: "easeInOut"}}
             className="fixed top-16 left-0 z-10"
         >
