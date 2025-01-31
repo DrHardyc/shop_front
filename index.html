@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/img/logo/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Сайт для поиска и заказа еды. Найдите свои любимые блюда и наслаждайтесь!" />
+  <meta name="keywords" content="еда, заказ еды, доставка, рестораны, фастфуд, Владикавказ, Осетия, Алания, шаурма, гриль" />
+<!--  <link rel="manifest" href="/site.webmanifest" />-->
+  <link rel="canonical" href="https://ваш-сайт.com" />
+  <title>Еда!</title>
+  <script>
+    if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  </script>
+</head>
+<body>
+<div id="root"></div>
+<script type="module" src="/src/main.jsx"></script>
+</body>
+</html>
+
