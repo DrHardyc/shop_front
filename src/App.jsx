@@ -7,6 +7,7 @@ import Login from "@components/pages/Login.jsx";
 import Register from "@components/pages/Register.jsx";
 import { AuthProvider } from "/src/context/AuthContext.jsx";
 import { useState } from "react";
+import RegisterAlt from "@components/pages/RegisterAlt.jsx";
 
 export default function App() {
     const [menuCollapsed, setMenuCollapsed] = useState(false);
@@ -27,6 +28,7 @@ export default function App() {
                                 <Route path="/" element={<Body />} />
                                 <Route path="/login" element={<Login />} />
                                 <Route path="/register" element={<Register />} />
+                                <Route path="/registeralt" element={<RegisterAlt />} />
                             </Routes>
                         </div>
                     </div>
