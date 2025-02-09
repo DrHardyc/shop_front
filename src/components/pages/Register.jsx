@@ -1,50 +1,31 @@
 import { useState } from "react";
-import {Button, Input, Card, Form, Select} from "antd";
+import {Button, Input, Card, Form, message} from "antd";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import UserService from "@/service/UserService.jsx";
 
 export default function Register() {
-    const [loading, setLoading] = useState(false);
-    // const [form] = Form.useForm();
-    const [formData, setFormData] = useState({
-        email: '',
-        firstName: '',
-        lastName: '',
-        phone: '',
-        password: '',
+    // const [loading, setLoading] = useState(false);
+    const [form] = Form.useForm();
+    // const [formData, setFormData] = useState({
+    //     email: '',
+    //     firstName: '',
+    //     lastName: '',
+    //     phone: '',
+    //     password: '',
+    //
+    // });
 
-    });
-    // const onFinish = (values) => {
-    //     setLoading(true);
-    //     setTimeout(() => {
-    //         setLoading(false);
-    //         console.log("Registration Success:", values);
-    //     }, 1000);
-    // };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
+    const handleSubmit = async () => {
         try {
-            // Call the register method from UserService
+            const values = form.getFieldsValue();
+            await UserService.register(values);
 
-            const token = localStorage.getItem('token');
-            await UserService.register(formData, token);
-
-            // Clear the form fields after successful registration
-            setFormData({
-                email: '',
-                firstName: '',
-                lastName: '',
-                phone: '',
-                password: ''
-            });
-            alert('User registered successfully');
-            // navigate('/admin/user-management');
-
+            form.resetFields();
+            message.success('Пользователь успешно зарегистрирован!');
         } catch (error) {
             console.error('Error registering user:', error);
-            alert('An error occurred while registering user');
+            message.error('Ошибка при регистрации пользователя');
         }
     };
 
@@ -64,17 +45,16 @@ export default function Register() {
                 >
                     <h2 className="text-center text-2xl font-bold mb-6">Регистрация</h2>
                     <Form
-                        onSubmit={handleSubmit}
-                        // form={form}
+                        form={form}
                         name="register"
-                        // onFinish={onFinish}
+                        onFinish={handleSubmit}
                         style={{ maxWidth: 400 }}
                         scrollToFirstError
                     >
                         <Form.Item
                             name="email"
                             rules={[{required: true, message: "Введите адрес электронной почты!", type: "email"}]}>
-                            <Input placeholder="эл. почта"/>
+                            <Input placeholder="эл. почта" />
                         </Form.Item>
                         <Form.Item name="firstName" rules={[{type: "string"}]}>
                             <Input placeholder="Ваше имя"/>
@@ -88,16 +68,30 @@ export default function Register() {
                         <Form.Item name="password" rules={[{required: true, message: "Введите пароль"}]}>
                             <Input.Password placeholder="Введите пароль"/>
                         </Form.Item>
-                        <Form.Item name="confirmPassword" rules={[{required: true, message: "Повторите пароль"}]}>
-                            <Input.Password placeholder="Повторите пароль"/>
+                        <Form.Item
+                            name="confirmPassword"
+                            dependencies={['password']}
+                            rules={[
+                                { required: true, message: 'Повторите пароль' },
+                                ({ getFieldValue }) => ({
+                                    validator(_, value) {
+                                        if (!value || getFieldValue('password') === value) {
+                                            return Promise.resolve();
+                                        }
+                                        return Promise.reject(new Error('Пароли не совпадают!'));
+                                    },
+                                }),
+                            ]}
+                        >
+                            <Input.Password placeholder="Повторите пароль" />
                         </Form.Item>
                         <Form.Item>
-                            <Button type="primary" htmlType="submit" block loading={loading}>
+                            <Button type="primary" htmlType="submit" block>
                                 Зарегистрироваться
                             </Button>
                         </Form.Item>
                         <p className="text-sm text-gray-600 text-center">
-                            Уже есть аккаунт? <Link to="/registeralt">Войти</Link>
+                            Уже есть аккаунт? <Link to="/login">Войти</Link>
                         </p>
                     </Form>
                 </Card>

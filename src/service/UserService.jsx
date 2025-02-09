@@ -14,12 +14,10 @@ export default class UserService{
         }
     }
 
-    static async register(userData, token){
+    static async register(userData){
+        console.log(userData);
         try{
-            const response = await axios.post(`${UserService.BASE_URL}/11/auth/register`, userData,
-                {
-                    headers: {Authorization: `Bearer ${token}`}
-                })
+            const response = await axios.post(`${UserService.BASE_URL}/11/auth/register`, userData)
             return response.data;
         }catch(err){
             throw err;
