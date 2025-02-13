@@ -4,18 +4,17 @@ import axios from "axios";
 export default class UserService{
     static BASE_URL = "http://localhost:8080"
 
-    static async login(email, password){
+    static async login(userData){
         try{
-            const response = await axios.post(`${UserService.BASE_URL}/11/auth/login`, {email, password})
+            const response = await axios.post(`${UserService.BASE_URL}/11/auth/login`, userData)
+            console.log(response.data)
             return response.data;
-
         }catch(err){
             throw err;
         }
     }
 
     static async register(userData){
-        console.log(userData);
         try{
             const response = await axios.post(`${UserService.BASE_URL}/11/auth/register`, userData)
             return response.data;

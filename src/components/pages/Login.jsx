@@ -1,17 +1,30 @@
-import { Button, Input, Card, Form } from "antd";
-import { Link } from "react-router-dom";
+import {Button, Input, Card, Form} from "antd";
+import {Link, useNavigate} from "react-router-dom";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import UserService from "@/service/UserService.jsx";
 
 export default function Login() {
     const [loading, setLoading] = useState(false);
-
-    const onFinish = (values) => {
-        setLoading(true);
-        setTimeout(() => {
+    const [form] = Form.useForm();
+    const navigate = useNavigate();
+    const [error, setError] = useState('')
+    const handleSubmit = async () => {
+        try {
+            setLoading(true);
+            const userData = await UserService.login(form.getFieldsValue());
+            if (userData.token){
+                localStorage.setItem('token', userData.token);
+                localStorage.setItem('role', userData.role);
+                navigate('/')
+            } else {
+                setError(userData.message);
+            }
+        } catch (error) {
+            setError(error.message)
+        } finally {
             setLoading(false);
-            console.log("Login Success:", values);
-        }, 1000);
+        }
     };
 
     return (
@@ -20,16 +33,19 @@ export default function Login() {
             animate={{ opacity: 1, scale: 1 }}
             className="fixed inset-0 flex items-center justify-center"
         >
-            <div
-                // style={{ paddingTop: '4rem', paddingBottom: '4rem' }} // Компенсация для фиксированного Header/Footer
-            >
+            <div>
                 <Card
                     className="w-full ml-10 max-w-sm shadow-xl p-6 bg-white rounded-xl"
                     style={{ maxWidth: '400px'}} // Фиксируем максимальную ширину
                 >
                     <h2 className="text-center text-2xl font-bold mb-6">Вход</h2>
-                    <Form onFinish={onFinish} className="space-y-4">
-                        <Form.Item name="username" rules={[{ required: true, message: "Введите имя пользователя!" }]}>
+                    {error && <p className="error-message">{error}</p>}
+                    <Form
+                        onFinish={handleSubmit}
+                        className="space-y-4"
+                        form={form}
+                    >
+                        <Form.Item name="email" rules={[{ required: true, message: "Введите имя пользователя!" }]}>
                             <Input
                                 placeholder="Имя пользователя"
                                 className="hover:border-blue-500 focus:border-blue-500" // Кастомные стили инпута
