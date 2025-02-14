@@ -1,27 +1,31 @@
-import {Button, Input, Card, Form} from "antd";
-import {Link, useNavigate} from "react-router-dom";
+import { Button, Input, Card, Form } from "antd";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import UserService from "@/service/UserService.jsx";
+import { useAuth } from "/src/context/AuthContext"; // Импортируем контекст аутентификации
 
 export default function Login() {
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
     const navigate = useNavigate();
-    const [error, setError] = useState('')
+    const [error, setError] = useState('');
+    const { login } = useAuth(); // Получаем метод login из контекста
+
     const handleSubmit = async () => {
         try {
             setLoading(true);
             const userData = await UserService.login(form.getFieldsValue());
-            if (userData.token){
+            if (userData.token) {
                 localStorage.setItem('token', userData.token);
                 localStorage.setItem('role', userData.role);
-                navigate('/')
+                login(userData); // Обновляем состояние аутентификации в контексте
+                navigate('/');
             } else {
                 setError(userData.message);
             }
         } catch (error) {
-            setError(error.message)
+            setError(error.message);
         } finally {
             setLoading(false);
         }
@@ -36,7 +40,7 @@ export default function Login() {
             <div>
                 <Card
                     className="w-full ml-10 max-w-sm shadow-xl p-6 bg-white rounded-xl"
-                    style={{ maxWidth: '400px'}} // Фиксируем максимальную ширину
+                    style={{ maxWidth: '400px' }} // Фиксируем максимальную ширину
                 >
                     <h2 className="text-center text-2xl font-bold mb-6">Вход</h2>
                     {error && <p className="error-message">{error}</p>}

@@ -10,7 +10,8 @@ const testArr = Array.from({ length: 20 }, (_, i) => ({
     price: String(i + 100),
 }));
 
-export default function Body() {
+export default function Body({ menuCollapsed }) {
+
     const renderedCards = testArr.map((item) => (
         <ProductCard
             key={item.id}
@@ -24,10 +25,16 @@ export default function Body() {
     return (
         <div className="flex-grow z-0 bg-white">
             <div className="flex gap-5 w-full">
-                {/* Список карточек */}
                 <Content>
                     <div className="bg-white p-5 rounded-2xl shadow-md">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4" aria-label="Список товаров">
+                        <div
+                            className={`grid gap-4 ${
+                                menuCollapsed
+                                    ? "grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-7"
+                                    : "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7"
+                            }`}
+                            aria-label="Список товаров"
+                        >
                             {renderedCards}
                         </div>
                     </div>
