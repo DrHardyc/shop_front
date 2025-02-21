@@ -1,16 +1,28 @@
-import { Avatar, Layout, Input, Button } from "antd";
-import { UserOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
-import { useAuth } from "/src/context/AuthContext";
+import { Avatar, Layout, Input, Button, Badge } from "antd";
+import { UserOutlined, MenuFoldOutlined, MenuUnfoldOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { Link, useNavigate } from "react-router-dom";
+import PropTypes from "prop-types";
+import { useAuth } from "@/hooks/useAuth.jsx"; // ✅ Исправили путь
+import { motion } from "framer-motion";
+import UserService from "@/service/UserService.jsx"; // ✅ Добавили анимацию
 
 const { Search } = Input;
 
-// eslint-disable-next-line react/prop-types
 export default function Header({ menuCollapsed, toggleMenu }) {
-    const { isAuthenticated, logout, isLoading, user } = useAuth(); // Добавлен user из контекста
+    const { logout, user } = useAuth();
+    const navigate = useNavigate();
 
-    if (isLoading) {
-        return <div>Загрузка...</div>;
+    async function handleLogout (){
+        await UserService.logout();
+        logout(); // Очищаем состояние пользователя в контексте
+    }
+
+    function handleClick(){
+        navigate("/profile");
+    }
+
+    function onclickToHome() {
+        navigate("/");
     }
 
     return (
@@ -20,42 +32,56 @@ export default function Header({ menuCollapsed, toggleMenu }) {
                     <div className="flex items-center gap-4 flex-grow">
                         <Button
                             type="text"
-                            icon={menuCollapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}
+                            icon={menuCollapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
                             onClick={toggleMenu}
                             className="lg:hidden"
                             aria-label={menuCollapsed ? "Развернуть меню" : "Свернуть меню"}
                         />
                         <img
                             src="/img/logo/favicon.ico"
-                            width={28} // Уменьшили размер логотипа
+                            width={28}
                             height={28}
                             alt="Fast-food search logo"
+                            onClick={onclickToHome}
                         />
-                        <Search placeholder="Поиск еды" className="w-full max-w-[350px]"
-                                allowClear/>
+                        <Search placeholder="Поиск еды" className="w-full max-w-[350px]" allowClear />
                     </div>
-
                     <div className="flex gap-3">
-                        {!isAuthenticated && (
-                            <>
+                        {!user ? (
+                            <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="flex gap-3"
+                            >
                                 <Link to="/login">
                                     <Button type="default" className="hidden sm:inline-block">Вход</Button>
                                 </Link>
                                 <Link to="/register">
                                     <Button type="primary" className="hidden sm:inline-block">Регистрация</Button>
                                 </Link>
-                            </>
-                        )}
-                        {isAuthenticated && (
-                            <>
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                initial={{ opacity: 0, y: -10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -10 }}
+                                className="flex items-center gap-3"
+                            >
+                                <Link to="/cart" className="relative">
+                                    <Badge size="small" offset={[10, -5]}>
+                                        <ShoppingCartOutlined className="text-2xl hover:text-yellow-400" />
+                                    </Badge>
+                                </Link>
                                 <Avatar
                                     size={28}
-                                    src={user?.avatarUrl} // Используем аватар пользователя, если он есть
-                                    icon={!user?.avatarUrl && <UserOutlined />} // Иконка по умолчанию, если аватара нет
+                                    src={user?.avatarUrl || "/img/default-avatar.png"} // ✅ Аватар по умолчанию
+                                    icon={!user?.avatarUrl && <UserOutlined />}
                                     className="hidden sm:inline-block"
+                                    onClick={handleClick}
                                 />
-                                <Button type="link" onClick={logout} className="hidden sm:inline-block">Выйти</Button>
-                            </>
+                                <Button type="link" onClick={handleLogout} className="hidden sm:inline-block">Выйти</Button>
+                            </motion.div>
                         )}
                     </div>
                 </div>
@@ -63,3 +89,8 @@ export default function Header({ menuCollapsed, toggleMenu }) {
         </div>
     );
 }
+
+Header.propTypes = {
+    menuCollapsed: PropTypes.bool,
+    toggleMenu: PropTypes.func,
+};

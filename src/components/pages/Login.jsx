@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import UserService from "@/service/UserService.jsx";
-import { useAuth } from "/src/context/AuthContext"; // Импортируем контекст аутентификации
+import {useAuth} from "@/hooks/UseAuth.jsx";
 
 export default function Login() {
     const [loading, setLoading] = useState(false);
@@ -16,11 +16,19 @@ export default function Login() {
         try {
             setLoading(true);
             const userData = await UserService.login(form.getFieldsValue());
-            if (userData.token) {
-                localStorage.setItem('token', userData.token);
-                localStorage.setItem('role', userData.role);
-                login(userData); // Обновляем состояние аутентификации в контексте
-                navigate('/');
+            if (userData.token && userData.refreshToken) {
+                // Создаем объект пользователя для контекста
+                const authUser = {
+                    id: userData.id, // Если есть ID пользователя
+                    name: userData.name, // Если есть имя
+                    role: userData.role,
+                    token: userData.token,
+                    refreshToken: userData.refreshToken,
+                };
+                localStorage.clear(); // на всякий чистим локалсторадж
+                localStorage.setItem("user", JSON.stringify(authUser)); // Сохраняем в localStorage
+                login(authUser); // Обновляем контекст авторизации
+                navigate("/");
             } else {
                 setError(userData.message);
             }

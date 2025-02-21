@@ -1,113 +1,40 @@
-import axios from "axios";
-
+import { api } from "./Api.jsx";
 
 export default class UserService{
-    static BASE_URL = "http://localhost:8080"
 
     static async login(userData){
-        try{
-            const response = await axios.post(`${UserService.BASE_URL}/11/auth/login`, userData)
-            console.log(response.data)
-            return response.data;
-        }catch(err){
-            throw err;
-        }
+        const response = await api.post('/auth/login', userData)
+        return response.data;
     }
 
     static async register(userData){
-        try{
-            const response = await axios.post(`${UserService.BASE_URL}/11/auth/register`, userData)
+        const response = await api.post('/auth/register', userData)
+        return response.data;
+    }
+
+    static async logout(){
+        const refreshToken = JSON.parse(localStorage.getItem("user"))?.refreshToken;
+        if (!refreshToken) return;
+
+        try {
+            await api.post("/auth/logout", { refreshToken });
+        } catch (error) {
+            console.error("Ошибка при выходе", error);
+        }
+
+        localStorage.clear(); // Очищаем локальное хранилище
+        window.location.href = "/login"; // Перенаправляем на страницу входа
+    }
+    static async refreshToken() {
+        const refreshToken = JSON.parse(localStorage.getItem("user"))?.refreshToken;
+        if (!refreshToken) return null;
+
+        try {
+            const response = await api.post('/auth/refresh', { refreshToken });
             return response.data;
-        }catch(err){
-            throw err;
+        } catch (error) {
+            console.error("Ошибка обновления токена", error);
+            return null;
         }
     }
-
-    static async getAllUsers(token){
-        try{
-            const response = await axios.get(`${UserService.BASE_URL}/admin/get-all-users`,
-                {
-                    headers: {Authorization: `Bearer ${token}`}
-                })
-            return response.data;
-        }catch(err){
-            throw err;
-        }
-    }
-
-
-    static async getYourProfile(token){
-        try{
-            const response = await axios.get(`${UserService.BASE_URL}/adminuser/get-profile`,
-                {
-                    headers: {Authorization: `Bearer ${token}`}
-                })
-            return response.data;
-        }catch(err){
-            throw err;
-        }
-    }
-
-    static async getUserById(userId, token){
-        try{
-            const response = await axios.get(`${UserService.BASE_URL}/admin/get-users/${userId}`,
-                {
-                    headers: {Authorization: `Bearer ${token}`}
-                })
-            return response.data;
-        }catch(err){
-            throw err;
-        }
-    }
-
-    static async deleteUser(userId, token){
-        try{
-            const response = await axios.delete(`${UserService.BASE_URL}/admin/delete/${userId}`,
-                {
-                    headers: {Authorization: `Bearer ${token}`}
-                })
-            return response.data;
-        }catch(err){
-            throw err;
-        }
-    }
-
-
-    static async updateUser(userId, userData, token){
-        try{
-            const response = await axios.put(`${UserService.BASE_URL}/admin/update/${userId}`, userData,
-                {
-                    headers: {Authorization: `Bearer ${token}`}
-                })
-            return response.data;
-        }catch(err){
-            throw err;
-        }
-    }
-
-    /**AUTHENTICATION CHECKER */
-    static logout(){
-        localStorage.removeItem('token')
-        localStorage.removeItem('role')
-    }
-
-    static isAuthenticated(){
-        const token = localStorage.getItem('token')
-        return !!token
-    }
-
-    static isAdmin(){
-        const role = localStorage.getItem('role')
-        return role === 'ADMIN'
-    }
-
-    static isUser(){
-        const role = localStorage.getItem('role')
-        return role === 'USER'
-    }
-
-    static adminOnly(){
-        return this.isAuthenticated() && this.isAdmin();
-    }
-
 }

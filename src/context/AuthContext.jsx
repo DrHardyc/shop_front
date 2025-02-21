@@ -1,31 +1,39 @@
-import React, { createContext, useContext, useState } from "react";
+import { createContext, useState, useEffect } from "react";
 import PropTypes from "prop-types";
 
-// Создаем контекст авторизации
-const AuthContext = createContext();
+export const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [user, setUser] = useState(() => {
+        const storedUser = localStorage.getItem("user");
+        return storedUser ? JSON.parse(storedUser) : null;
+    });
 
-    const login = () => {
-        setIsAuthenticated(true);
+    useEffect(() => {
+        const checkSession = () => {
+            const storedUser = JSON.parse(localStorage.getItem("user"));
+            if (storedUser?.expiresAt && new Date() > new Date(storedUser.expiresAt)) {
+                logout();
+            }
+        };
+        checkSession();
+    }, []);
+
+    const login = (authUser, expiresInMinutes = 60) => {
+        const expiresAt = new Date(Date.now() + expiresInMinutes * 60000);
+        const userData = { ...authUser, expiresAt };
+        localStorage.setItem("user", JSON.stringify(userData));
+        setUser(userData);
     };
 
     const logout = () => {
-        setIsAuthenticated(false);
+        localStorage.removeItem("user");
+        setUser(null);
     };
 
-    return (
-        <AuthContext.Provider value={{ isAuthenticated, login, logout }}>
-            {children}
-        </AuthContext.Provider>
-    );
+    return <AuthContext.Provider value={{ user, login, logout }}>{children}</AuthContext.Provider>;
 }
 
 AuthProvider.propTypes = {
     children: PropTypes.node.isRequired,
 };
-
-export function useAuth() {
-    return useContext(AuthContext);
-}

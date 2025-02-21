@@ -1,4 +1,3 @@
-import React from 'react';
 import { useState } from "react";
 import {Button, Input, Card, Form, message, Spin, Checkbox} from "antd";
 import { Link } from "react-router-dom";
@@ -14,8 +13,6 @@ export default function Register() {
             setLoading(true);
             await UserService.register(form.getFieldsValue());
 
-            // form.resetFields();
-            // console.log()
             message.success('Пользователь успешно создан. Для активации пройдите по ссылке указанной в письме.');
         } catch (error) {
             // console.error('Error registering user:', error);
