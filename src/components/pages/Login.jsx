@@ -16,16 +16,14 @@ export default function Login() {
         try {
             setLoading(true);
             const userData = await UserService.login(form.getFieldsValue());
-            if (userData.token && userData.refreshToken) {
+            if (userData.token) {
                 // Создаем объект пользователя для контекста
                 const authUser = {
                     id: userData.id, // Если есть ID пользователя
                     name: userData.name, // Если есть имя
                     role: userData.role,
                     token: userData.token,
-                    refreshToken: userData.refreshToken,
                 };
-                localStorage.clear(); // на всякий чистим локалсторадж
                 localStorage.setItem("user", JSON.stringify(authUser)); // Сохраняем в localStorage
                 login(authUser); // Обновляем контекст авторизации
                 navigate("/");

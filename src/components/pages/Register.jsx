@@ -12,9 +12,9 @@ export default function Register() {
         try {
             setLoading(true);
             await UserService.register(form.getFieldsValue());
-
             message.success('Пользователь успешно создан. Для активации пройдите по ссылке указанной в письме.');
-        } catch (error) {
+
+        } catch {
             // console.error('Error registering user:', error);
             message.error('Ошибка при регистрации пользователя');
         } finally {

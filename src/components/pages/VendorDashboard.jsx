@@ -1,8 +1,6 @@
-import React, {useContext, useEffect, useState} from "react";
-import { Table, Button, Card, Statistic, Modal, Form, Input, InputNumber } from "antd";
-import { PlusOutlined, BarChartOutlined, ShoppingCartOutlined } from "@ant-design/icons";
-import {useNavigate} from "react-router-dom";
-import { AuthContext } from "@/context/AuthContext";
+import React, {useState} from "react";
+import {Button, Card, Form, Input, InputNumber, Modal, Statistic, Table} from "antd";
+import {BarChartOutlined, PlusOutlined, ShoppingCartOutlined} from "@ant-design/icons";
 
 
 export default function VendorDashboard(){

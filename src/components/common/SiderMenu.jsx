@@ -1,25 +1,68 @@
-import { Menu } from "antd";
-import { HomeOutlined, SearchOutlined, UserOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
-import { useEffect } from "react";
-import { useMediaQuery } from "react-responsive";
+import {Menu} from "antd";
+import {
+    DashboardOutlined,
+    EyeOutlined,
+    HomeOutlined,
+    ProductOutlined,
+    SearchOutlined,
+    UserOutlined
+} from "@ant-design/icons";
+import {Link} from "react-router-dom";
+import {motion} from "framer-motion";
+import {useEffect, useState} from "react";
+import {useMediaQuery} from "react-responsive";
+import {useAuth} from "@/hooks/UseAuth.jsx";
+import {ProtectedRoute} from "@/routes/ProtectedRoute.jsx";
+import PropTypes from "prop-types";
 
-// eslint-disable-next-line react/prop-types
+
 export default function SiderMenu({ collapsed, setCollapsed }) {
     const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
+    const { user } = useAuth();
+    const [menuItems, setMenuItems] = useState([]);
 
     useEffect(() => {
         if (isMobile) {
-            setCollapsed(true); // Автоматическое скрытие на мобильных устройствах
-        } else setCollapsed(false)
+            setCollapsed(true);
+        } else {
+            setCollapsed(false);
+        }
     }, [isMobile, setCollapsed]);
 
-    const menuItems = [
-        { key: "1", icon: <HomeOutlined />, label: <Link to="/">Главная</Link> },
-        { key: "2", icon: <SearchOutlined />, label: <Link to="/search">Поиск</Link> },
-        { key: "3", icon: <UserOutlined />, label: <Link to="/profile">Профиль</Link> },
-    ];
+    useEffect(() => {
+        const baseMenu = [
+            { key: "1", icon: <HomeOutlined />, label: <Link to="/">Главная</Link> },
+            { key: "2", icon: <SearchOutlined />, label: <Link to="/search">Поиск</Link> },
+            { key: "3", icon: <UserOutlined />, label: <Link to="/profile">Профиль</Link> },
+        ];
+
+        if (user){
+            switch (user.role) {
+                case "OWNER":
+                    setMenuItems([
+                        ...baseMenu,
+                        { key: "4", icon: <ProductOutlined />,   label: <Link to="/vendor/products">Продукты</Link> },
+                        { key: "5", icon: <DashboardOutlined />, label: <Link to="/vendor/dashboard">Статистика</Link> }
+                    ]);
+                    break;
+                case "moderator":
+                    setMenuItems([
+                        ...baseMenu,
+                        {
+                            key: "6",
+                            icon: <EyeOutlined />,
+                            label: <Link to="/moderation">Модерация</Link>
+                        }
+                    ]);
+                    break;
+                default:
+                    setMenuItems(baseMenu);
+            }
+        } else {
+            setMenuItems(baseMenu);
+        }
+
+    }, [user]);
 
     return (
         <motion.div
@@ -38,4 +81,9 @@ export default function SiderMenu({ collapsed, setCollapsed }) {
             )}
         </motion.div>
     );
+}
+
+ProtectedRoute.propTypes = {
+    collapsed: PropTypes.bool,
+    setCollapsed: PropTypes.func,
 }

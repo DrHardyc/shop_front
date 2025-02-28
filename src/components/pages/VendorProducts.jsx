@@ -10,28 +10,34 @@ export default function VendorProducts() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
 
+    // UseEffect вызывается один раз при монтировании компонента
     useEffect(() => {
         loadProducts();
     }, []);
 
     const loadProducts = async () => {
+        if (loading) return; // Предотвращает повторный запрос, если уже идет загрузка
         setLoading(true);
         try {
             const data = await fetchVendorProducts();
-            setProducts(data);
+            setProducts(data); // Обновляем данные
         } catch (error) {
             message.error("Ошибка загрузки товаров");
+        } finally {
+            setLoading(false); // Ожидание завершено
         }
-        setLoading(false);
     };
 
     const handleDelete = async (id) => {
+        setLoading(true); // Показываем индикатор загрузки при удалении
         try {
             await deleteProduct(id);
             message.success("Товар удалён");
-            loadProducts();
+            await loadProducts(); // Перезагружаем список продуктов после удаления
         } catch (error) {
             message.error("Ошибка удаления товара");
+        } finally {
+            setLoading(false); // Завершаем процесс загрузки
         }
     };
 
@@ -53,20 +59,27 @@ export default function VendorProducts() {
     return (
         <div className="p-4">
             <div className="flex justify-between mb-4">
-                <h2 className="text-xl font-bold">Мои товары</h2>
+                <h2 className="text-xl font-bold">Наше меню</h2>
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsModalOpen(true)}>
-                    Добавить товар
+                    Добавить позицию
                 </Button>
             </div>
             <Table dataSource={products} columns={columns} loading={loading} rowKey="id" />
 
             <Modal
-                title={editingProduct ? "Редактировать товар" : "Добавить товар"}
+                title={editingProduct ? "Редактировать позицию" : "Добавить позицию"}
                 open={isModalOpen}
                 onCancel={() => { setIsModalOpen(false); setEditingProduct(null); }}
                 footer={null}
             >
-                <ProductForm product={editingProduct} onSuccess={() => { setIsModalOpen(false); setEditingProduct(null); loadProducts(); }} />
+                <ProductForm
+                    product={editingProduct}
+                    onSuccess={async () => {
+                        setIsModalOpen(false);
+                        setEditingProduct(null);
+                        await loadProducts(); // Перезагружаем продукты после добавления/редактирования
+                    }}
+                />
             </Modal>
         </div>
     );

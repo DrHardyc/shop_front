@@ -1,5 +1,4 @@
 import axios from "axios";
-import UserService from "@/service/UserService.jsx";
 
 // Используем import.meta.env вместо process.env
 export const api = axios.create({
@@ -12,9 +11,12 @@ export const api = axios.create({
 // Интерцептор запроса — добавляем токен
 api.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem("token");
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
+        const userData = localStorage.getItem("user");
+        if (userData) {
+            const { token } = JSON.parse(userData);
+            if (token) {
+                config.headers.Authorization = `Bearer ${token}`;
+            }
         }
         return config;
     },
@@ -26,16 +28,8 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         if (error.response?.status === 401) {
-            const newTokenData = await UserService.refreshToken();
-            if (newTokenData.token) {
-                localStorage.removeItem("token");
-                localStorage.setItem("user", newTokenData);
-                error.config.headers.Authorization = `Bearer ${newTokenData.token}`;
-                return api.request(error.config())
-            } else {
-                localStorage.clear();
-                window.location.href = "/login";
-            }
+            localStorage.clear();
+            window.location.href = "/login";
         }
         return Promise.reject(error);
     }

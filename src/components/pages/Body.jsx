@@ -1,9 +1,7 @@
-import { Layout } from "antd";
+import {Layout} from "antd";
 import ProductCard from "../common/ProductCard.jsx";
-import PropTypes from "prop-types";
-import SiderMenu from "@components/common/SiderMenu.jsx";
 
-const { Content, Sider } = Layout;
+const { Content } = Layout;
 
 const testArr = Array.from({ length: 20 }, (_, i) => ({
     id: i,

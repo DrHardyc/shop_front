@@ -12,7 +12,6 @@ export function ProtectedRoute({ allowedRoles }) {
     if (!allowedRoles.includes(user.role)) {
         return <Navigate to="/" replace />; // Если нет прав — редирект на главную
     }
-
     return <Outlet />;
 }
 
