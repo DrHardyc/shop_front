@@ -33,7 +33,7 @@ export default function SiderMenu({ collapsed, setCollapsed }) {
         const baseMenu = [
             { key: "1", icon: <HomeOutlined />, label: <Link to="/">Главная</Link> },
             { key: "2", icon: <SearchOutlined />, label: <Link to="/search">Поиск</Link> },
-            { key: "3", icon: <UserOutlined />, label: <Link to="/profile">Профиль</Link> },
+
         ];
 
         if (user){
@@ -41,18 +41,15 @@ export default function SiderMenu({ collapsed, setCollapsed }) {
                 case "OWNER":
                     setMenuItems([
                         ...baseMenu,
+                        { key: "3", icon: <UserOutlined />, label: <Link to="/vendor/profile">Профиль</Link> },
                         { key: "4", icon: <ProductOutlined />,   label: <Link to="/vendor/products">Продукты</Link> },
                         { key: "5", icon: <DashboardOutlined />, label: <Link to="/vendor/dashboard">Статистика</Link> }
                     ]);
                     break;
-                case "moderator":
+                case "CUSTOMER":
                     setMenuItems([
                         ...baseMenu,
-                        {
-                            key: "6",
-                            icon: <EyeOutlined />,
-                            label: <Link to="/moderation">Модерация</Link>
-                        }
+                        { key: "6", icon: <UserOutlined />, label: <Link to="/customer/profile">Профиль</Link> },
                     ]);
                     break;
                 default:
@@ -77,8 +74,9 @@ export default function SiderMenu({ collapsed, setCollapsed }) {
                     items={menuItems}
                     className="rounded-md"
                     style={{ backgroundColor: "#ffffff" }}
-                />
+                     />
             )}
+                
         </motion.div>
     );
 }

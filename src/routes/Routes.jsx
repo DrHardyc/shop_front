@@ -12,6 +12,7 @@ const routes = {
     vendor: [
         { path: "/vendor/dashboard", component: lazy(() => import("@components/pages/VendorDashboard.jsx")) },
         { path: "/vendor/products", component: lazy(() => import("@components/pages/VendorProducts.jsx")) },
+        { path: "/vendor/profile", component: lazy(() => import("@components/pages/VendorProfile.jsx")) },
     ],
 };
 

@@ -18,7 +18,13 @@ export default function Header({ menuCollapsed, toggleMenu }) {
     }
 
     function handleClick(){
-        navigate("/profile");
+        const user = JSON.parse(localStorage.getItem("user"));
+        console.log(user);
+        if (user.role === "OWNER") {
+            navigate("/vendor/profile");
+        } else if (user.role === "CUSTOMER") {
+            navigate("/owner/profile");
+        }
     }
 
     function onclickToHome() {
