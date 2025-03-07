@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Outlet } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { ProtectedRoute } from "@/routes/ProtectedRoute.jsx";
 
@@ -10,14 +10,14 @@ const routes = {
         { path: "/register", component: lazy(() => import("@components/pages/Register.jsx")) },
     ],
     vendor: [
-        { path: "/vendor/dashboard", component: lazy(() => import("@components/pages/VendorDashboard.jsx")) },
-        { path: "/vendor/products", component: lazy(() => import("@components/pages/VendorProducts.jsx")) },
-        { path: "/vendor/profile", component: lazy(() => import("@components/pages/VendorProfile.jsx")) },
+        { path: "dashboard", component: lazy(() => import("@components/pages/VendorDashboard.jsx")) },
+        { path: "products", component: lazy(() => import("@components/pages/VendorProducts.jsx")) },
+        { path: "profile/:vendorId", component: lazy(() => import("@components/pages/VendorProfile.jsx")) },
+        { path: "profile", component: lazy(() => import("@components/pages/VendorProfile.jsx")) },
     ],
 };
 
 export default function AppRoutes() {
-
     return (
         <Suspense fallback={<div className="text-center p-10">Загрузка...</div>}>
             <Routes>
@@ -25,8 +25,9 @@ export default function AppRoutes() {
                     <Route key={path} path={path} element={<Component />} />
                 ))}
 
-                {/* Защищённые маршруты для владельцев */}
-                <Route path="/vendor" element={<ProtectedRoute allowedRoles={["OWNER"]} />}>
+                <Route path="/vendor" element={<ProtectedRoute allowedRoles={["OWNER"]}>
+                    <Outlet />
+                </ProtectedRoute>}>
                     {routes.vendor.map(({ path, component: Component }) => (
                         <Route key={path} path={path} element={<Component />} />
                     ))}

@@ -32,7 +32,7 @@ export default function SiderMenu({ collapsed, setCollapsed }) {
     useEffect(() => {
         const baseMenu = [
             { key: "1", icon: <HomeOutlined />, label: <Link to="/">Главная</Link> },
-            { key: "2", icon: <SearchOutlined />, label: <Link to="/search">Поиск</Link> },
+            // { key: "2", icon: <SearchOutlined />, label: <Link to="/search">Поиск</Link> },
 
         ];
 
@@ -42,8 +42,6 @@ export default function SiderMenu({ collapsed, setCollapsed }) {
                     setMenuItems([
                         ...baseMenu,
                         { key: "3", icon: <UserOutlined />, label: <Link to="/vendor/profile">Профиль</Link> },
-                        { key: "4", icon: <ProductOutlined />,   label: <Link to="/vendor/products">Продукты</Link> },
-                        { key: "5", icon: <DashboardOutlined />, label: <Link to="/vendor/dashboard">Статистика</Link> }
                     ]);
                     break;
                 case "CUSTOMER":

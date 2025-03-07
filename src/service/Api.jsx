@@ -3,9 +3,9 @@ import axios from "axios";
 // Используем import.meta.env вместо process.env
 export const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080/",
-    headers: {
-        "Content-Type": "application/json",
-    },
+    // headers: {
+    //     "Content-Type": "application/json",
+    // },
 });
 
 // Интерцептор запроса — добавляем токен

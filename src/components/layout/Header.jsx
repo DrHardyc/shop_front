@@ -19,7 +19,6 @@ export default function Header({ menuCollapsed, toggleMenu }) {
 
     function handleClick(){
         const user = JSON.parse(localStorage.getItem("user"));
-        console.log(user);
         if (user.role === "OWNER") {
             navigate("/vendor/profile");
         } else if (user.role === "CUSTOMER") {

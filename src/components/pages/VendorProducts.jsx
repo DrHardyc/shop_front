@@ -1,18 +1,22 @@
-import { useEffect, useState } from "react";
+import {useEffect, useRef, useState} from "react";
 import { Table, Button, Modal, message } from "antd";
 import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import ProductForm from "../common/ProductForm.jsx";
-import { fetchVendorProducts, deleteProduct } from "../../service/ProductService.jsx";
+import { fetchVendorProducts, deleteProduct } from "../../service/VendorProductService.jsx";
 
 export default function VendorProducts() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
+    const effectExecuted = useRef(false);
 
     // UseEffect вызывается один раз при монтировании компонента
     useEffect(() => {
-        loadProducts();
+        if (!effectExecuted.current) {
+            effectExecuted.current = true;
+            loadProducts();
+        }
     }, []);
 
     const loadProducts = async () => {
@@ -21,7 +25,7 @@ export default function VendorProducts() {
         try {
             const data = await fetchVendorProducts();
             setProducts(data); // Обновляем данные
-        } catch (error) {
+        } catch {
             message.error("Ошибка загрузки товаров");
         } finally {
             setLoading(false); // Ожидание завершено
@@ -34,7 +38,7 @@ export default function VendorProducts() {
             await deleteProduct(id);
             message.success("Товар удалён");
             await loadProducts(); // Перезагружаем список продуктов после удаления
-        } catch (error) {
+        } catch {
             message.error("Ошибка удаления товара");
         } finally {
             setLoading(false); // Завершаем процесс загрузки
@@ -61,7 +65,7 @@ export default function VendorProducts() {
             <div className="flex justify-between mb-4">
                 <h2 className="text-xl font-bold">Наше меню</h2>
                 <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsModalOpen(true)}>
-                    Добавить позицию
+                    {/*Добавить позицию*/}
                 </Button>
             </div>
             <Table dataSource={products} columns={columns} loading={loading} rowKey="id" />

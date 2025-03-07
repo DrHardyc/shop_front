@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Button, Form, Input, InputNumber, message, Upload, Select } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
-import { createProduct, updateProduct } from "../../service/ProductService.jsx";
+import { createProduct, updateProduct } from "@/service/VendorProductService.jsx";
 const { TextArea } = Input;
 const { Option } = Select;
 
