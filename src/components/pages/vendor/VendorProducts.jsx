@@ -1,8 +1,9 @@
 import {useEffect, useRef, useState} from "react";
-import { Table, Button, Modal, message } from "antd";
-import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
-import ProductForm from "../common/ProductForm.jsx";
-import { fetchVendorProducts, deleteProduct } from "../../service/VendorProductService.jsx";
+import {Button, message, Modal, Table} from "antd";
+import {DeleteOutlined, EditOutlined, PlusOutlined} from "@ant-design/icons";
+import ProductForm from "../../common/ProductForm.jsx";
+import {deleteProduct, fetchVendorProducts} from "../../../service/VendorProductService.jsx";
+import AntImageCustom from "@components/custom/AntImageCustom.jsx";
 
 export default function VendorProducts() {
     const [products, setProducts] = useState([]);
@@ -46,6 +47,22 @@ export default function VendorProducts() {
     };
 
     const columns = [
+        {
+            title: "Изображение",
+            dataIndex: "image",
+            key: "image",
+            render: (image) => (
+                <div style={{ textAlign: "center" }}>
+                    <AntImageCustom
+                        width={80}
+                        height={80}
+                        src={"http://localhost:8080/" + image}
+                        preview={false}
+                        placeholder={<div style={{ height: "80px" }} />}
+                    />
+                </div>
+            )
+        },
         { title: "Название", dataIndex: "name", key: "name" },
         { title: "Цена", dataIndex: "price", key: "price", render: (price) => `${price} ₽` },
         {

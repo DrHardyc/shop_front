@@ -1,12 +1,5 @@
 import {Menu} from "antd";
-import {
-    DashboardOutlined,
-    EyeOutlined,
-    HomeOutlined,
-    ProductOutlined,
-    SearchOutlined,
-    UserOutlined
-} from "@ant-design/icons";
+import {HomeOutlined, UserOutlined} from "@ant-design/icons";
 import {Link} from "react-router-dom";
 import {motion} from "framer-motion";
 import {useEffect, useState} from "react";
@@ -47,7 +40,7 @@ export default function SiderMenu({ collapsed, setCollapsed }) {
                 case "CUSTOMER":
                     setMenuItems([
                         ...baseMenu,
-                        { key: "6", icon: <UserOutlined />, label: <Link to="/customer/profile">Профиль</Link> },
+                        { key: "6", icon: <UserOutlined />, label: <Link to="/buyer/profile">Профиль</Link> },
                     ]);
                     break;
                 default:

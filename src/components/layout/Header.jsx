@@ -22,7 +22,7 @@ export default function Header({ menuCollapsed, toggleMenu }) {
         if (user.role === "OWNER") {
             navigate("/vendor/profile");
         } else if (user.role === "CUSTOMER") {
-            navigate("/owner/profile");
+            navigate("/buyer/profile");
         }
     }
 
@@ -73,11 +73,13 @@ export default function Header({ menuCollapsed, toggleMenu }) {
                                 exit={{ opacity: 0, y: -10 }}
                                 className="flex items-center gap-3"
                             >
-                                <Link to="/cart" className="relative">
-                                    <Badge size="small" offset={[10, -5]}>
-                                        <ShoppingCartOutlined className="text-2xl hover:text-yellow-400" />
-                                    </Badge>
-                                </Link>
+                                {user.role === 'CUSTOMER' && (
+                                    <Link to="/cart" className="relative">
+                                        <Badge size="small" offset={[10, -5]}>
+                                            <ShoppingCartOutlined className="text-2xl hover:text-yellow-400" />
+                                        </Badge>
+                                    </Link>
+                                )}
                                 <Avatar
                                     size={28}
                                     src={user?.avatarUrl || "/img/default-avatar.png"} // ✅ Аватар по умолчанию

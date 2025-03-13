@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
-import { Button, Form, Input, InputNumber, message, Upload, Select } from "antd";
-import { PlusOutlined } from "@ant-design/icons";
+import {useEffect, useState} from "react";
+import {Button, Form, Input, InputNumber, message, Select, Upload} from "antd";
+import {PlusOutlined} from "@ant-design/icons";
 import PropTypes from "prop-types";
-import { createProduct, updateProduct } from "@/service/VendorProductService.jsx";
+import {createProduct, updateProduct} from "@/service/VendorProductService.jsx";
+
 const { TextArea } = Input;
 const { Option } = Select;
 
-const categories = ["Пицца", "Бургер", "Суши"];
+const categories = ["Пицца", "Бургер", "Суши", "Шаурма", "Гриль", "Шашлык", "Картошка фри", "Другое"];
 
 export default function ProductForm({ product, onSuccess }) {
     const [form] = Form.useForm();
@@ -16,7 +17,7 @@ export default function ProductForm({ product, onSuccess }) {
     useEffect(() => {
         if (product) {
             form.setFieldsValue(product);
-            setImage(product.image ? [{ url: product.image }] : []);
+            setImage(product.image ? [{ url: "http://localhost:8080/" + product.image }] : []);
         } else {
             form.resetFields();
             setImage([]);
@@ -27,17 +28,24 @@ export default function ProductForm({ product, onSuccess }) {
         setImage(fileList);
     };
 
-    const handleSubmit = async (values) => {
+    const handleSubmit = async (productData) => {
         setLoading(true);
-        try {
-            const imageUrl = image[0]?.url || "";
-            const payload = { ...values, image: imageUrl };
+        const formData = new FormData();
 
+        formData.append("name", productData.name);
+        formData.append("price", productData.price);
+        formData.append("category", productData.price);
+        formData.append("description", productData.description);
+        if (image[0]?.originFileObj) {
+            formData.append("image", image[0].originFileObj);
+        }
+        try {
             if (product) {
-                await updateProduct(product.id, payload);
+                formData.append('id', product.id);
+                await updateProduct(formData);
                 message.success("Позиция успешно обновлена!");
             } else {
-                await createProduct(payload);
+                await createProduct(formData);
                 message.success("Позиция добавлена!");
             }
             onSuccess();

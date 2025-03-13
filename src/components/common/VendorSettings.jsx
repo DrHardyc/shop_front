@@ -1,9 +1,10 @@
-import { Button, Form, Input, message, Upload } from "antd";
-import { UploadOutlined } from "@ant-design/icons";
-import { useVendorData } from "@/utils/VendorDataProfileUtils.jsx";
-import {updateVendor, updateVendorLogo} from "@/service/VendorService.jsx";
-import PropTypes from "prop-types";
-import {test} from "@/service/TestService.jsx";
+import {Button, Form, Input, message, Spin, Upload} from "antd";
+import {UploadOutlined} from "@ant-design/icons";
+import {useVendorData} from "@/utils/VendorProfileUtil.jsx";
+import {updateVendor} from "@/service/VendorService.jsx";
+import {useEffect} from "react";
+import '@ant-design/v5-patch-for-react-19';
+
 
 export default function VendorSettings() {
     const { companyData, isLoading, error } = useVendorData();
@@ -15,25 +16,18 @@ export default function VendorSettings() {
                 throw new Error('ID вендора не определен');
             }
 
-            // Добавляем данные компании как JSON
-            const companyDataJson = {
-                name: values.name,
-                owner: values.owner,
-                description: values.description,
-                address: values.address,
-                phone: values.phone,
-                website: values.website,
-            };
-            await updateVendor(companyData.id, companyDataJson);
-
-            // Отправляем файл отдельно потому что бэкенд не может их обработать одновременно
-            // Отправляем файл, если он есть
+            const formData = new FormData();
+            formData.append("id", companyData.id);
+            formData.append("name", values.name);
+            formData.append("owner", values.owner);
+            formData.append("description", values.description);
+            formData.append("address", values.address);
+            formData.append("phone", values.phone);
+            formData.append("website", values.website);
             if (values.logo && values.logo.length > 0) {
-                const formData = new FormData();
                 formData.append('logo', values.logo[0].originFileObj);
-                await updateVendorLogo(companyData.id, formData);
             }
-
+            await updateVendor(formData);
             message.success('Данные успешно обновлены');
         } catch (err) {
             message.error('Произошла ошибка при обновлении данных');
@@ -41,14 +35,19 @@ export default function VendorSettings() {
         }
     };
 
-    if (isLoading) return <div>Загрузка...</div>;
+    useEffect(() => {
+        if (companyData) {
+            form.setFieldsValue(companyData);
+        }
+    }, [companyData, form]);
+
+    if (isLoading) return <div className="flex items-center justify-center h-screen"><Spin/></div>;
     if (error) return <div>Ошибка: {error}</div>;
 
     return (
         <Form
             form={form}
             layout="vertical"
-            initialValues={companyData}
             onFinish={handleSubmit}
         >
             <Form.Item
@@ -64,7 +63,7 @@ export default function VendorSettings() {
                 name="owner"
                 rules={[{ required: true, message: 'Пожалуйста, введите имя владельца' }]}
             >
-                <Input />
+                <Input disabled />
             </Form.Item>
 
             <Form.Item
@@ -128,6 +127,6 @@ export default function VendorSettings() {
     );
 };
 
-VendorSettings.propTypes = {
-    vendorId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
-};
+// VendorSettings.propTypes = {
+//     vendorId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+// };

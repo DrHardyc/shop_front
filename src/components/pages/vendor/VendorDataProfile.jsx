@@ -1,11 +1,12 @@
-import {Descriptions, Image, Rate, Spin} from "antd";
-import {useVendorData} from "@/utils/VendorDataProfileUtils.jsx";
+import {Descriptions, Rate, Spin} from "antd";
+import {useVendorData} from "@/utils/VendorProfileUtil.jsx";
 import VendorMap from "@components/common/VendorMap.jsx";
+import AntImageCustom from "@components/custom/AntImageCustom.jsx";
 
 export default function VendorDataProfile() {
-    const { companyData, isLoading, error, logo } = useVendorData();
+    const { companyData, isLoading, error } = useVendorData();
 
-    if (isLoading) return <div>Загрузка...</div>;
+    if (isLoading) return <div className="flex items-center justify-center h-screen"><Spin/></div>;
     if (error) return <div>Ошибка: {error}</div>;
 
     return (
@@ -15,16 +16,13 @@ export default function VendorDataProfile() {
                     <Descriptions.Item label="Логотип">
                         {isLoading ? (
                             <Spin />
-                        ) : logo ? (
-                            <Image
+                        ) : (
+                            <AntImageCustom
                                 width={100}
-                                src={logo}
+                                height={100}
+                                src={companyData.logoLink}
                                 alt="Логотип компании"
                             />
-                        ) : error ? (
-                            <div>Ошибка загрузки логотипа</div>
-                        ) : (
-                            <div>Логотип не доступен</div>
                         )}
                     </Descriptions.Item>
                     <Descriptions.Item label="Наименование">{companyData.name}</Descriptions.Item>
@@ -39,8 +37,6 @@ export default function VendorDataProfile() {
                     </Descriptions.Item>
                     <Descriptions.Item label="Карта"><VendorMap/></Descriptions.Item>
                 </Descriptions>
-
-
             )}
         </div>
     );

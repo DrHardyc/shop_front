@@ -1,7 +1,7 @@
 import {Card, Tabs} from "antd";
-import VendorProducts from "@components/pages/VendorProducts.jsx";
-import VendorDashboard from "@components/pages/VendorDashboard.jsx";
-import VendorDataProfile from "@components/pages/VendorDataProfile.jsx";
+import VendorProducts from "@components/pages/vendor/VendorProducts.jsx";
+import VendorDashboard from "@components/pages/vendor/VendorDashboard.jsx";
+import VendorDataProfile from "@components/pages/vendor/VendorDataProfile.jsx";
 import VendorSettings from "@components/common/VendorSettings.jsx";
 
 export default function VendorProfile() {

@@ -5,3 +5,11 @@
   line-height: 1.5;
   font-weight: 400;
 }
+
+.custom-modal .ant-modal-close-x {
+  color: black; // желаемый цвет
+}
+
+.custom-modal .ant-modal-close:hover .ant-modal-close-x {
+  color: darkgrey; // цвет при наведении
+}
