@@ -1,5 +1,3 @@
-
-
 import { api } from "./Api.jsx"; // Здесь api — это общий конфиг для запросов
 
 export const fetchBuyerProfile = async () => {

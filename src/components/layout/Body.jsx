@@ -41,6 +41,7 @@ export default function Body() {
                     >
                         {products.map((item) => (
                             <ProductCard
+                                id={item.id}
                                 key={item.id}
                                 name={item.name}
                                 price={item.price}

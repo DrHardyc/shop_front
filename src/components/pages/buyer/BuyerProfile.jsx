@@ -1,6 +1,7 @@
-import {Card, Spin, Tabs} from "antd";
+import {Card, Tabs} from "antd";
 import BuyerDataProfile from "@components/pages/buyer/BuyerDataProfile.jsx";
 import BuyerSettings from "@components/common/BuyerSettings.jsx";
+import BuyerCart from "@components/pages/buyer/BuyerCart.jsx";
 
 export default function VendorProfile() {
 
@@ -13,7 +14,7 @@ export default function VendorProfile() {
         {
             key: "2",
             label: "Текущий заказы",
-            children: <Spin />,
+            children: <BuyerCart />,
         },
         // {
         //     key: "3",
